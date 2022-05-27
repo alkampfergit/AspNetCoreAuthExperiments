@@ -2,11 +2,14 @@
 
 <div>
     <div>
-          <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="AzureAADLogin">Login with azure aad</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="AzureAADLogin">Login with azure aad</a>
+    </div>
+    <div>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="NegotiateLogin">Automatic login with Active Directory</a>
     </div>
     <div>
 
-        @using (Html.BeginForm("PerformLogin", "Account", FormMethod.Post))
+        @using (Html.BeginForm("PerformADLogin", "Account", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             <div>

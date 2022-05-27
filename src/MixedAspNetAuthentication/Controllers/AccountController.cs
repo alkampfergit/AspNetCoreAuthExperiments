@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,13 @@ namespace MixedAspNetAuthentication.Controllers
             return View(new LoginModel());
         }
 
-        public async Task<IActionResult> PerformLogin(LoginModel loginModel)
+        public async Task< IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> PerformADLogin(LoginModel loginModel)
         {
             var ldapPort = LdapConnection.DefaultPort;
             int ldapVersion = LdapConnection.LdapV3;
@@ -51,7 +58,7 @@ namespace MixedAspNetAuthentication.Controllers
                 return View("Login", loginModel);
             }
 
-            //now you should check the user
+            //now you should check the user and grab all the groups if needed.
             var claims = new List<Claim>
             {
                 new Claim("sub", loginModel.UserName),
@@ -59,7 +66,7 @@ namespace MixedAspNetAuthentication.Controllers
                 new Claim("role", "Geek")
             };
 
-            var ci = new ClaimsIdentity(claims, "custom-auth-type", "name", "role");
+            var ci = new ClaimsIdentity(claims, "ad", "name", "role");
             var cp = new ClaimsPrincipal(ci);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, cp);
@@ -69,6 +76,27 @@ namespace MixedAspNetAuthentication.Controllers
         [Authorize(AuthenticationSchemes = OpenIdConnectDefaults.AuthenticationScheme)]
         public IActionResult AzureAADLogin()
         {
+            return RedirectToAction("index", "home");
+        }
+
+        [Authorize(AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> NegotiateLogin()
+        {
+            //Get claims principal that was created by the negotiate authentication scheme
+            var user = HttpContext.User;
+
+            //Now we will create a standard claim as for login with username and password.
+            var claims = new List<Claim>
+            {
+                new Claim("sub", user.Identity!.Name!),
+                new Claim("name", "Gian Maria"),
+                new Claim("role", "Geek")
+            };
+
+            var ci = new ClaimsIdentity(claims, "ad", "name", "role");
+            var cp = new ClaimsPrincipal(ci);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, cp);
             return RedirectToAction("index", "home");
         }
     }
