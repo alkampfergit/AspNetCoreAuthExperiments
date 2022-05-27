@@ -1,0 +1,30 @@
+﻿@model MixedAspNetAuthentication.Models.Account.LoginModel
+
+<div>
+    @using (Html.BeginForm("PerformLogin", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div >
+
+            <div class="display-4">
+                <h1> Login </h1>
+            </div>
+            <div class="form-group centerlook">
+                <label>User Name: </label>
+                @Html.EditorFor(model => model.UserName)
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+            <div class="form-group centerlook">
+                <label>Password:</label>
+                @Html.EditorFor(model => model.Password)
+                @Html.ValidationMessageFor(model => model.Password)
+
+            </div>
+            <div class="loginbtn">
+
+                <input type="submit" value="Login" class="btn btn-primary" />
+
+            </div>
+        </div>
+    }
+</div>

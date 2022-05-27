@@ -10,24 +10,40 @@
     <h4>DumpTokenModel</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AuthProvider)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AuthProvider)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.AccessToken)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.AccessToken)
-        </dd>
-        <dt class = "col-sm-2">
+        </dd>     
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdToken)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdToken)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RefreshToken)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RefreshToken)
         </dd>
+
+        @foreach (var claim in Model.Claims)
+        {
+            <dt class="col-sm-2">
+                @claim.Type
+            </dt>
+            <dd class="col-sm-10">
+                @claim.Value
+            </dd>
+        }
     </dl>
 </div>
 <div>

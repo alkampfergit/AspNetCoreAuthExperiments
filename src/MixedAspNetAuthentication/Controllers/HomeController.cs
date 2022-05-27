@@ -30,6 +30,8 @@ namespace MixedAspNetAuthentication.Controllers
         public async Task<IActionResult> DumpTokens()
         {
             DumpTokenModel model = new DumpTokenModel();
+
+            model.AuthProvider = HttpContext.User.Identity.AuthenticationType;
             model.RefreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
             model.AccessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
             model.IdToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
