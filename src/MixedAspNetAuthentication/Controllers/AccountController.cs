@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using MixedAspNetAuthentication.Models.Account;
+using MixedAspNetAuthentication.Support.Configurations;
 using Novell.Directory.Ldap;
 using System.Security.Claims;
 
@@ -11,6 +13,14 @@ namespace MixedAspNetAuthentication.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IOptionsMonitor<LdapConfiguration> _ldapConfiguration;
+
+        public AccountController(
+            IOptionsMonitor<LdapConfiguration> ldapConfiguration)
+        {
+            _ldapConfiguration = ldapConfiguration;
+        }
+
         public IActionResult Login()
         {
             return View(new LoginModel());
@@ -20,8 +30,8 @@ namespace MixedAspNetAuthentication.Controllers
         {
             var ldapPort = LdapConnection.DefaultPort;
             int ldapVersion = LdapConnection.LdapV3;
-            String ldapHost = "10.0.0.42";
-            String loginDN = @$"cyberpunk\{loginModel.UserName}";
+            String ldapHost = _ldapConfiguration.CurrentValue.Address;
+            String loginDN = @$"{_ldapConfiguration.CurrentValue.DomainName}\{loginModel.UserName}";
             String password1 = loginModel.Password;
             LdapConnection lc = new LdapConnection();
 

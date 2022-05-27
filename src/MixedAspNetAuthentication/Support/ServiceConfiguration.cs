@@ -13,10 +13,8 @@ namespace MixedAspNetAuthentication.Support
 
         public static void ConfigureServices(WebApplicationBuilder builder)
         {
-            builder.Services.Configure<OidcConfiguration>(options => builder.Configuration.GetSection("oidc").Bind(options));
-
-            var oidcConfiguration = new OidcConfiguration();
-            builder.Configuration.Bind("oidc", oidcConfiguration);
+            var oidcConfiguration = ConfigureSetting<OidcConfiguration>(builder, "oidc");
+            var ldapConfiguration = ConfigureSetting<LdapConfiguration>(builder, "ldap");
 
             builder.Services.AddLogging(cfg => cfg.AddSerilog());
 
@@ -47,6 +45,14 @@ namespace MixedAspNetAuthentication.Support
                     RoleClaimType = JwtClaimTypes.Role
                 };
             });
+        }
+
+        private static T ConfigureSetting<T>(WebApplicationBuilder builder, string section) where T : class, new()
+        {
+            builder.Services.Configure<T>(options => builder.Configuration.GetSection(section).Bind(options));
+            var configuration = new T();
+            builder.Configuration.Bind(section, configuration);
+            return configuration;
         }
 
         internal static void AddAdditionalConfigurationSources(WebApplicationBuilder builder)
