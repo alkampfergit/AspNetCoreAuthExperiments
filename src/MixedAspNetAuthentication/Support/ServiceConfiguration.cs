@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using MixedAspNetAuthentication.Support.Configurations;
 using Serilog;
 
 namespace MixedAspNetAuthentication.Support
@@ -12,6 +13,11 @@ namespace MixedAspNetAuthentication.Support
 
         public static void ConfigureServices(WebApplicationBuilder builder)
         {
+            builder.Services.Configure<OidcConfiguration>(options => builder.Configuration.GetSection("oidc").Bind(options));
+
+            var oidcConfiguration = new OidcConfiguration();
+            builder.Configuration.Bind("oidc", oidcConfiguration);
+
             builder.Services.AddLogging(cfg => cfg.AddSerilog());
 
             builder.Services.AddAuthentication(options =>
@@ -27,9 +33,9 @@ namespace MixedAspNetAuthentication.Support
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = "https://login.microsoftonline.com/854d7cc7-3d8e-42db-b62b-39ff06ca250f/";
-                options.ClientId = "06947bf7-75e5-4e3f-aa87-162b3681d50f";
-                options.ClientSecret = "cc28Q~~oQ2eZST3YcZBFxo9EumH5C3w82hJrqaM0";
+                options.Authority = oidcConfiguration.Authority;
+                options.ClientId = oidcConfiguration.ClientId;
+                options.ClientSecret = oidcConfiguration.ClientSecret;
                 options.RequireHttpsMetadata = true;
                 options.ResponseType = "code";
 
