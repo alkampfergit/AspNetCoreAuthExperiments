@@ -1,0 +1,14 @@
+﻿{
+
+  "profiles": {
+    "MixedAspNetAuthentication": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://jarvisdevproxy.codewrecks.com",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
