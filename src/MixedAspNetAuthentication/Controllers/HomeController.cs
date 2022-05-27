@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MixedAspNetAuthentication.Models;
 using System.Diagnostics;
 
@@ -15,7 +17,7 @@ namespace MixedAspNetAuthentication.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
@@ -23,6 +25,18 @@ namespace MixedAspNetAuthentication.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> DumpTokens()
+        {
+            DumpTokenModel model = new DumpTokenModel();
+            model.RefreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+            model.AccessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            model.IdToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
+
+            model.Claims = User.Claims.Select(c => new ClaimDto(c.Type, c.Value)).ToArray();
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

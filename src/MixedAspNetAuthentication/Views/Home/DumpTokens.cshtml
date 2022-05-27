@@ -1,0 +1,36 @@
+﻿@model MixedAspNetAuthentication.Models.DumpTokenModel
+
+@{
+    ViewData["Title"] = "DumpToken";
+}
+
+<h1>DumpToken</h1>
+
+<div>
+    <h4>DumpTokenModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AccessToken)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AccessToken)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdToken)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdToken)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RefreshToken)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RefreshToken)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
